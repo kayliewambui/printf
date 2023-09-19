@@ -1,0 +1,96 @@
+#include "main.h"
+
+/**
+ * _printf - Our custom printf function
+ * @format: The format string
+ * @...: The arguments to print
+ *
+ * Return: The number of characters printed
+ */
+int _printf(const char *format, ...)
+{
+    int i = 0, count = 0;
+    va_list args;
+
+    va_start(args, format);
+
+    while (format && format[i])
+    {
+        if (format[i] != '%')
+        {
+            write(1, &format[i], 1);
+            count++;
+        }
+        else
+        {
+            i++;
+            if (format[i] == 'b')
+                count += print_binary(va_arg(args, unsigned int));
+            else
+            {
+                write(1, "%", 1);
+                count++;
+            }
+        }
+        i++;
+    }
+
+    va_end(args);
+
+    return (count);
+}
+
+/**
+ * print_binary - Print an unsigned integer in binary
+ * @n: The unsigned integer to print
+ *
+ * Return: The number of binary digits printed
+ */
+int print_binary(unsigned int n)
+{
+    int count = 0;
+
+    if (n == 0)
+    {
+        write(1, "0", 1);
+        count++;
+    }
+    else
+    {
+        count += print_binary_recursive(n);
+    }
+
+    return (count);
+}
+
+/**
+ * print_binary_recursive - Recursively print an unsigned integer in binary
+ * @n: The unsigned integer to print
+ *
+ * Return: The number of binary digits printed
+ */
+int print_binary_recursive(unsigned int n)
+{
+    int count = 0;
+
+    if (n == 0)
+        return (0);
+
+    count += print_binary_recursive(n >> 1);
+    count += write_digit(n & 1);
+
+    return (count);
+}
+
+/**
+ * write_digit - Write a binary digit to stdout
+ * @digit: The binary digit (0 or 1)
+ *
+ * Return: Always 1 (the number of characters written)
+ */
+int write_digit(int digit)
+{
+    char c = (digit == 0) ? '0' : '1';
+    write(1, &c, 1);
+    return (1);
+}

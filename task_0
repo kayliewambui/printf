@@ -61,13 +61,4 @@ int _printf(const char *format, ...)
 
     va_end(args);
     return count;
-}
-
-#include "main.h"
-
-int main(void)
-{
-    _printf("Hello, %s!\n", "world");
-    _printf("The answer is %d%%.\n", 42);
-    return (0);
-}
+}}

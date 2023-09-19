@@ -1,0 +1,57 @@
+#include "main.h"
+
+/**
+ * _printf - Our custom printf function
+ * @format: The format string containing the conversion specifiers
+ *
+ * Return: The number of characters printed
+ */
+int _printf(const char *format, ...)
+{
+    int printed_chars = 0;
+    va_list args;
+    int i = 0;
+
+    va_start(args, format);
+
+    while (format && format[i])
+    {
+        if (format[i] == '%' && (format[i + 1] == 'd' || format[i + 1] == 'i'))
+        {
+            int num = va_arg(args, int);
+            char num_str[12]; // Sufficient for INT_MIN in base 10
+            int j = 0;
+
+            if (num < 0)
+            {
+                num_str[j++] = '-';
+                num = -num;
+            }
+
+            while (num > 0)
+            {
+                num_str[j++] = num % 10 + '0';
+                num /= 10;
+            }
+
+            while (j-- > 0)
+            {
+                write(1, &num_str[j], 1);
+                printed_chars++;
+            }
+
+            i++; // Move past the conversion specifier
+        }
+        else
+        {
+            write(1, &format[i], 1);
+            printed_chars++;
+        }
+        i++;
+    }
+
+    va_end(args);
+
+    return (printed_chars);
+}
+
