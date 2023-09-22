@@ -1,0 +1,86 @@
+#include "main.h"
+#include <stdarg.h>
+#include <stdio.h>
+
+int _printf(const char *fmt, ...)
+{
+int i = 0;
+int print_chars = 0;
+va_list list;
+
+if (fmt == NULL)
+return (-1);
+
+va_start(list, fmt);
+
+for (i = 0; fmt[i] != '\0'; i++)
+{
+if (fmt[i] != '%')
+{
+write(1, &fmt[i], 1);
+print_chars++;
+}
+else
+{
+i++;  // Move past the '%'
+switch (fmt[i])
+{
+case 'c':
+ {
+ char c = va_arg(list, int);
+write(1, &c, 1);
+print_chars++;
+break;
+}
+case 's':
+{
+char *str = va_arg(list, char *);
+while (*str)
+{
+write(1, str++, 1);
+print_chars++;
+}
+break;
+}
+case 'd':
+case 'i':
+{
+int number = va_arg(list, int);
+char digit;
+if (number < 0)
+{
+write(1, "-", 1);
+print_chars++;
+number = -number;
+}
+
+if (number == 0)
+{
+write(1, "0", 1);
+print_chars++;
+}
+else
+{
+// Reverse print the number
+while (number > 0)
+{
+digit = '0' + (number % 10);
+write(1, &digit, 1);
+print_chars++;
+number /= 10;
+}
+}
+break;
+}
+case '%':
+write(1, "%", 1);
+print_chars++;
+break;
+}
+}
+}
+
+va_end(list);
+
+return print_chars;
+}
